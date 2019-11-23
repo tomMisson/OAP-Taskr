@@ -6,7 +6,7 @@ var hash = require('hash.js')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 8080; 
 
 //e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 var accounts = express.Router();

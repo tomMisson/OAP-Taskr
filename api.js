@@ -30,8 +30,8 @@ api.post('/task', (req, res) => {
     res.send(req.body.name);
 });
 
-api.get('/task/:id', (req, res) => {
-    res.send(req.body.name);
+api.get('/task', (req, res) => {
+    console.log(`Working!`);
 });
 
 app.use('/api', api);

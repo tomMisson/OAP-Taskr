@@ -4,7 +4,8 @@
   "description": "Api to sit between the frontend and mongodb",
   "main": "api.js",
   "scripts": {
-    "test": "nodemon api.js"
+    "test": "nodemon api.js",
+    "start": "node api.js"
   },
   "repository": {
     "type": "git",

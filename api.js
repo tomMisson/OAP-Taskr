@@ -6,7 +6,7 @@ var hash = require('hash.js')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000; 
 
 //e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 var accounts = express.Router();
@@ -36,4 +36,4 @@ api.get('/task/:id', (req, res) => {
 
 app.use('/api', api);
 
-app.listen(port);
+app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));

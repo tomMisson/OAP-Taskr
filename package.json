@@ -1,0 +1,24 @@
+{
+  "name": "oap-taskr",
+  "version": "1.0.0",
+  "description": "Api to sit between the frontend and mongodb",
+  "main": "api.js",
+  "scripts": {
+    "test": "nodemon api.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomMisson/OAP-Taskr.git"
+  },
+  "author": "Tom Misson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomMisson/OAP-Taskr/issues"
+  },
+  "homepage": "https://github.com/tomMisson/OAP-Taskr#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "hash.js": "^1.1.7",
+    "nodemon": "^2.0.1"
+  }
+}

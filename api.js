@@ -1,7 +1,12 @@
+require('dotenv').config()
 var express = require('express')
 var app = express()            
 var bodyParser = require('body-parser');
 var hash = require('hash.js')
+const MongoClient = require('mongodb').MongoClient;
+
+// replace the uri string with your connection string.
+const uri = process.env.CONNECTION;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -31,9 +36,20 @@ api.post('/task', (req, res) => {
 });
 
 api.get('/task', (req, res) => {
-    console.log(`Working!`);
+    console.log("Working? " + uri)
+    MongoClient.connect(uri,  { useUnifiedTopology: true },  async (err, client) => {
+        if(err) {
+             console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+        }
+        else{
+            console.log('Connected...');
+            const collection = client.db("OAP-Taskr").collection("tasks");
+            res.send(await db.collection.find());
+        }
+        client.close();
+     });
 });
 
 app.use('/api', api);
 
-app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
+app.listen(PORT);

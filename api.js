@@ -18,12 +18,22 @@ var accounts = express.Router();
 var api = express.Router();
 
 
-// accounts.get('/new', (req, res) => {
-//     let token = req.body.alias;
-//     token = hash.sha256().update(token).digest('hex');
-//     res.send({message:token+""});
-//     //Add to DB
-// });
+accounts.get('/new', (req, res) => {
+    let name = req.body.alias;
+    token = hash.sha256().update(name).digest('hex');
+    res.send({"NEW ACCOUNT":token+""});
+    MongoClient.connect(uri,  { useUnifiedTopology: true },  async (err, client) => {
+        if(err) {
+             console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+        }
+        else{
+            console.log('Connected...');
+            const collection = client.db("OAP-Taskr").collection("accounts");
+            db.collection.insert({"usrname":name,"token":token})
+        }
+        client.close();
+     });
+});
 
 app.use('/account', accounts);
 
@@ -44,7 +54,8 @@ api.get('/task', (req, res) => {
         else{
             console.log('Connected...');
             const collection = client.db("OAP-Taskr").collection("tasks");
-            res.send(await db.collection.find());
+            await db.collection.find().then(data, res.send(data));
+            
         }
         client.close();
      });

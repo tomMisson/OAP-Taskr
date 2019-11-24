@@ -5,40 +5,31 @@ var bodyParser = require('body-parser');
 var hash = require('hash.js')
 const MongoClient = require('mongodb').MongoClient;
 
-// replace the uri string with your connection string.
-const uri = process.env.CONNECTION;
-
+const client = new MongoClient(process.env.CONNECTION, { useUnifiedTopology: true });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 8080; 
+const PORT = process.env.PORT || 3000; 
 
-//e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 var accounts = express.Router();
 var api = express.Router();
 
-
-accounts.get('/new', (req, res) => {
+accounts.post('/new', (req, res) => {
     let name = req.body.alias;
     token = hash.sha256().update(name).digest('hex');
     res.send({"NEW ACCOUNT":token+""});
-    MongoClient.connect(uri,  { useUnifiedTopology: true },  async (err, client) => {
+    client.connect(  async (err, client) => {
+        const db = client.db("OAP-Taskr");
         if(err) {
              console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
         }
         else{
             console.log('Connected...');
             const collection = client.db("OAP-Taskr").collection("accounts");
-            db.collection.insert({"usrname":name,"token":token})
+            db.collection.insert({"usrname":name,"token":token});
+            client.close();
         }
-        client.close();
      });
-});
-
-app.use('/account', accounts);
-
-api.get('/', (req, res) => {
-    res.send({error:"Please use a valid access token"})
 });
 
 api.post('/task', (req, res) => {
@@ -46,21 +37,27 @@ api.post('/task', (req, res) => {
 });
 
 api.get('/task', (req, res) => {
-    console.log("Working? " + uri)
-    MongoClient.connect(uri,  { useUnifiedTopology: true },  async (err, client) => {
-        if(err) {
-             console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-        }
-        else{
-            console.log('Connected...');
-            const collection = client.db("OAP-Taskr").collection("tasks");
-            await db.collection.find().then(data, res.send(data));
-            
-        }
-        client.close();
+    console.log("Working? ");
+    client.connect((err) => {
+        console.log("Connected to db");
+        console.log("Errors? ", err);
+        const db = client.db("OAP-Taskr");
+        const collection = db.collection('tasks');
+        collection.find({}).toArray((err,data) => {
+            res.send(data);
+        });
      });
 });
 
-app.use('/api', api);
+api.post('/points/:id', (req, res) => {
+    //Add/remove points
+});
 
-app.listen(PORT);
+api.get('/points/:id', (req, res) => {
+    //Get current points value
+});
+
+app.use('/api', api);
+app.use('/account', accounts);
+
+app.listen(PORT, () => console.log("Listening on port " + PORT));
